@@ -4,18 +4,70 @@
       xmlns:f="jakarta.faces.core"
       xmlns:h="jakarta.faces.html"
       xmlns:p="primefaces">
-
     <h:head>
         <title>PrimeFaces Test</title>
         <h:outputScript name="test.js" />
         <h:outputStylesheet name="test.css" />
     </h:head>
     <h:body>
-
         <h1>#{testView.string}</h1>
         <h:form id="frmTest">
-
+            <p:dataTable id="parentTable"
+                widgetVar="parentTable"
+                value="#{myBean.parents}"
+                var="parent"
+                cellNavigation="false"
+                rowKey="#{parent.id}"
+                rowIndexVar="parentIndex"
+                expandedRow="true"
+                selection="#{myBean.selectedParent}"
+                selectionMode="single"
+                selectionRowMode="new"
+                editable="true"
+                editMode="cell"
+                stripedRows="true"
+                scrollable="true"
+                scrollHeight="400px">
+                <p:ajax event="rowSelect" listener="#{myBean.rowSelect}" update="@Form"/>
+                <p:column width="20">
+                <p:rowToggler rendered="#{parent.fragments.size() > 1}"/>
+                </p:column>
+                <p:column headerText="ID" width="75">
+                <h:outputText value="#{parent.id}"/>
+                </p:column>
+                <p:column headerText="Name">
+                <h:outputText value="#{parent.name}"/>
+                </p:column>
+                <p:column headerText="Description">
+                <h:outputText value="#{parent.description != '' ? parent.description : '-'}"/>
+                </p:column>
+                <p:rowExpansion styleClass="ui-datatable-row--flush"
+                                rendered="#{parent.fragments.size() > 1}">
+                    <p:dataTable id="fragmentTable"
+                                    widgetVar="fragmentTable"
+                                    var="fragmentRow"
+                                    rowIndexVar="fragmentIndex"
+                                    cellNavigation="false"
+                                    selection="#{myBean.selectedFragment}"
+                                    selectionMode="single"
+                                    selectionRowMode="new"
+                                    stripedRows="true"
+                                    editable="true"
+                                    editMode="cell"
+                                    styleClass="ui-datatable--panel ui-datatable--compact-nested sg-no-header"
+                                    rowKey="#{fragmentRow.id}"
+                                    value="#{parent.fragments}">
+                        <p:ajax event="rowSelect" listener="#{myBean.rowSelect}" update="@form"/>
+                        <p:column width="1007"/>
+                        <p:column width="135">
+                            <h:outputText value="#{fragmentRow.frequency}">
+                                <f:convertNumber pattern="0.000"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column width="90"/>
+                    </p:dataTable>
+                </p:rowExpansion>
+            </p:dataTable>
         </h:form>
-
     </h:body>
 </html>

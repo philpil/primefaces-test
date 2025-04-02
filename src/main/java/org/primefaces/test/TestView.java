@@ -13,25 +13,30 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-@Named
+@Named("myBean")
 @ViewScoped
 public class TestView implements Serializable {
 
-    private String string;
-    private Integer integer;
-    private BigDecimal decimal;
-    private LocalDateTime localDateTime;
-    private List<TestObject> list;
+    @Getter
+    @Setter
+    private List<parentDtoV1> parents;
 
-    @PostConstruct
-    public void init() {
-        string = "Welcome to PrimeFaces!!!";
-        list = new ArrayList<>(Arrays.asList(
-                new TestObject("Thriller", "Michael Jackson", 1982),
-                new TestObject("Back in Black", "AC/DC", 1980),
-                new TestObject("The Bodyguard", "Whitney Houston", 1992),
-                new TestObject("The Dark Side of the Moon", "Pink Floyd", 1973)
-        ));
+    @Getter
+    @Setter
+    private ParentDtoV1 selectedParent;
+
+    @Getter
+    @Setter
+    private FragmentDtoV1 selectedFragment;
+
+    public void rowSelect(SelectEvent<Object> event) {
+        if (event.getObject() instanceof ParentDtoV1 parent) {
+            selectedFragment = null;
+        } else if (event.getObject() instanceof FragmentDtoV1 fragment) {
+            selectedParent = null;
+        } else {
+            selectedFragment = null;
+            selectedParent = null;
+        }
     }
-
 }
